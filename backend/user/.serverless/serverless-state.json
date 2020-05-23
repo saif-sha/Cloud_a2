@@ -1,0 +1,978 @@
+{
+  "service": {
+    "service": "user",
+    "serviceObject": {
+      "name": "user"
+    },
+    "provider": {
+      "stage": "dev",
+      "variableSyntax": "\\${([^{}]+?)}",
+      "name": "aws",
+      "memorySize": 128,
+      "timeout": 30,
+      "runtime": "python3.7",
+      "region": "ap-southeast-2",
+      "logRetentionInDays": 5,
+      "versionFunctions": true,
+      "remoteFunctionData": null,
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketEncryption": {
+                "ServerSideEncryptionConfiguration": [
+                  {
+                    "ServerSideEncryptionByDefault": {
+                      "SSEAlgorithm": "AES256"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "ServerlessDeploymentBucketPolicy": {
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+              "Bucket": {
+                "Ref": "ServerlessDeploymentBucket"
+              },
+              "PolicyDocument": {
+                "Statement": [
+                  {
+                    "Action": "s3:*",
+                    "Effect": "Deny",
+                    "Principal": "*",
+                    "Resource": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            },
+                            "/*"
+                          ]
+                        ]
+                      }
+                    ],
+                    "Condition": {
+                      "Bool": {
+                        "aws:SecureTransport": false
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "LoginLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/user-dev-login",
+              "RetentionInDays": 5
+            }
+          },
+          "SignupLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/user-dev-signup",
+              "RetentionInDays": 5
+            }
+          },
+          "UpdateUnderscoreuserLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/user-dev-update_user",
+              "RetentionInDays": 5
+            }
+          },
+          "LoginLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/user/dev/1590256731827-2020-05-23T17:58:51.827Z/login.zip"
+              },
+              "FunctionName": "user-dev-login",
+              "Handler": "login.lambda_handler",
+              "MemorySize": 128,
+              "Role": "arn:aws:iam::970396822222:role/lambda_basic_execution",
+              "Runtime": "python3.7",
+              "Timeout": 30,
+              "Environment": {
+                "Variables": {
+                  "stage": "dev"
+                }
+              },
+              "Layers": [
+                "arn:aws:lambda:ap-southeast-2:970396822222:layer:dev-devDependencies:2"
+              ]
+            },
+            "DependsOn": [
+              "LoginLogGroup"
+            ]
+          },
+          "LoginLambdaVersion78Kn6KglZ6mctI5gh4ExQfYzrnn37qFiz2MVMbRg9e0": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "LoginLambdaFunction"
+              },
+              "CodeSha256": "S2mrdrDMIUm8zBdr4YoiJ9DYG/R+mdAbCqj9eCKJ+PM="
+            }
+          },
+          "SignupLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/user/dev/1590256731827-2020-05-23T17:58:51.827Z/signup.zip"
+              },
+              "FunctionName": "user-dev-signup",
+              "Handler": "signup.lambda_handler",
+              "MemorySize": 128,
+              "Role": "arn:aws:iam::970396822222:role/lambda_basic_execution",
+              "Runtime": "python3.7",
+              "Timeout": 30,
+              "Environment": {
+                "Variables": {
+                  "stage": "dev"
+                }
+              },
+              "Layers": [
+                "arn:aws:lambda:ap-southeast-2:970396822222:layer:dev-devDependencies:2"
+              ]
+            },
+            "DependsOn": [
+              "SignupLogGroup"
+            ]
+          },
+          "SignupLambdaVersionY9daiEdyRpTwM1A1hwoDVZuqn6YDSK7s9A203LHqsw": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "SignupLambdaFunction"
+              },
+              "CodeSha256": "S2mrdrDMIUm8zBdr4YoiJ9DYG/R+mdAbCqj9eCKJ+PM="
+            }
+          },
+          "UpdateUnderscoreuserLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/user/dev/1590256731827-2020-05-23T17:58:51.827Z/update_user.zip"
+              },
+              "FunctionName": "user-dev-update_user",
+              "Handler": "update_user.lambda_handler",
+              "MemorySize": 128,
+              "Role": "arn:aws:iam::970396822222:role/lambda_basic_execution",
+              "Runtime": "python3.7",
+              "Timeout": 30,
+              "Environment": {
+                "Variables": {
+                  "stage": "dev"
+                }
+              },
+              "Layers": [
+                "arn:aws:lambda:ap-southeast-2:970396822222:layer:dev-devDependencies:2"
+              ]
+            },
+            "DependsOn": [
+              "UpdateUnderscoreuserLogGroup"
+            ]
+          },
+          "UpdateUnderscoreuserLambdaVersion2Xu5h3GnZNHaWunDqr2D7UFXWfUqIIIRJJLW9k5X4": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "UpdateUnderscoreuserLambdaFunction"
+              },
+              "CodeSha256": "S2mrdrDMIUm8zBdr4YoiJ9DYG/R+mdAbCqj9eCKJ+PM="
+            }
+          },
+          "ApiGatewayRestApi": {
+            "Type": "AWS::ApiGateway::RestApi",
+            "Properties": {
+              "Name": "dev-user",
+              "EndpointConfiguration": {
+                "Types": [
+                  "EDGE"
+                ]
+              },
+              "Policy": ""
+            }
+          },
+          "ApiGatewayResourceSignin": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "signin",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceSignup": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "signup",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceUpdate": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "update",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodSigninOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceSignin"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodSignupOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceSignup"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodUpdateOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,PUT'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceUpdate"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodSigninPost": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceSignin"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": true,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "LoginLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayMethodSignupPost": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceSignup"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": true,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "SignupLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayMethodUpdatePut": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "PUT",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceUpdate"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": true,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "UpdateUnderscoreuserLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayDeployment1590256730496": {
+            "Type": "AWS::ApiGateway::Deployment",
+            "Properties": {
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "StageName": "dev"
+            },
+            "DependsOn": [
+              "ApiGatewayMethodSigninOptions",
+              "ApiGatewayMethodSignupOptions",
+              "ApiGatewayMethodUpdateOptions",
+              "ApiGatewayMethodSigninPost",
+              "ApiGatewayMethodSignupPost",
+              "ApiGatewayMethodUpdatePut"
+            ]
+          },
+          "LoginLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "LoginLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "SignupLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "SignupLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "UpdateUnderscoreuserLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "UpdateUnderscoreuserLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          },
+          "LoginLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "LoginLambdaVersion78Kn6KglZ6mctI5gh4ExQfYzrnn37qFiz2MVMbRg9e0"
+            }
+          },
+          "SignupLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "SignupLambdaVersionY9daiEdyRpTwM1A1hwoDVZuqn6YDSK7s9A203LHqsw"
+            }
+          },
+          "UpdateUnderscoreuserLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "UpdateUnderscoreuserLambdaVersion2Xu5h3GnZNHaWunDqr2D7UFXWfUqIIIRJJLW9k5X4"
+            }
+          },
+          "ServiceEndpoint": {
+            "Description": "URL of the service endpoint",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  "https://",
+                  {
+                    "Ref": "ApiGatewayRestApi"
+                  },
+                  ".execute-api.",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ".",
+                  {
+                    "Ref": "AWS::URLSuffix"
+                  },
+                  "/dev"
+                ]
+              ]
+            }
+          }
+        }
+      },
+      "coreCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketEncryption": {
+                "ServerSideEncryptionConfiguration": [
+                  {
+                    "ServerSideEncryptionByDefault": {
+                      "SSEAlgorithm": "AES256"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "ServerlessDeploymentBucketPolicy": {
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+              "Bucket": {
+                "Ref": "ServerlessDeploymentBucket"
+              },
+              "PolicyDocument": {
+                "Statement": [
+                  {
+                    "Action": "s3:*",
+                    "Effect": "Deny",
+                    "Principal": "*",
+                    "Resource": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            },
+                            "/*"
+                          ]
+                        ]
+                      }
+                    ],
+                    "Condition": {
+                      "Bool": {
+                        "aws:SecureTransport": false
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          }
+        }
+      },
+      "vpc": {}
+    },
+    "custom": {
+      "CustomDomainMaping": {
+        "domainName": "backend.rmitassignment.tk",
+        "endpointType": "Regional",
+        "certificateArn": "arn:aws:acm:ap-southeast-2:970396822222:certificate/d3f63a80-691e-47fc-bf04-fe9ca04e70e9",
+        "certificateName": "*.rmitassignment.tk",
+        "createRoute53Record": true,
+        "hostedZoneId": "Z2RPCDW04V8134"
+      },
+      "enabledlambdaevents": true,
+      "enabledCloudWatchevents": "ENABLED",
+      "APIKeys": {
+        "ServerlessCoreAPIKey": "RestAPIKey",
+        "SupportAPIKey": "assign_api_key"
+      },
+      "UsagePlans": {
+        "ASSIGNAPIUsage": "ASSIGNAPIUsage"
+      },
+      "stage": "dev",
+      "isremoteoldstructure": "0",
+      "logRetentionInDays": 5,
+      "account": 970396822222,
+      "customAuthorizer": "rest_auth",
+      "region": "ap-southeast-2",
+      "roles": {
+        "basicExecution": "lambda_basic_execution"
+      }
+    },
+    "pluginsData": {},
+    "functions": {
+      "login": {
+        "handler": "login.lambda_handler",
+        "layers": {
+          "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"LoginLambdaFunction\"][\"Properties\"][\"Layers\"]"
+        },
+        "environment": {
+          "stage": "dev"
+        },
+        "memorySize": 128,
+        "timeout": 30,
+        "logRetentionInDays": 5,
+        "role": "arn:aws:iam::970396822222:role/lambda_basic_execution",
+        "events": [
+          {
+            "http": {
+              "path": "signin",
+              "cors": {
+                "origins": [
+                  "*"
+                ],
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "POST"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent"
+                ],
+                "allowCredentials": false
+              },
+              "method": "post",
+              "private": true,
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "package": {
+          "include": [
+            "login.py"
+          ],
+          "artifact": "/Users/ali/Desktop/Assignmentproject/code/backend/user/.serverless/login.zip"
+        },
+        "name": "user-dev-login",
+        "memory": 128,
+        "runtime": "python3.7",
+        "vpc": {},
+        "versionLogicalId": "LoginLambdaVersion78Kn6KglZ6mctI5gh4ExQfYzrnn37qFiz2MVMbRg9e0"
+      },
+      "signup": {
+        "handler": "signup.lambda_handler",
+        "layers": {
+          "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"SignupLambdaFunction\"][\"Properties\"][\"Layers\"]"
+        },
+        "environment": {
+          "stage": "dev"
+        },
+        "memorySize": 128,
+        "timeout": 30,
+        "logRetentionInDays": 5,
+        "role": "arn:aws:iam::970396822222:role/lambda_basic_execution",
+        "events": [
+          {
+            "http": {
+              "path": "signup",
+              "cors": {
+                "origins": [
+                  "*"
+                ],
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "POST"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent"
+                ],
+                "allowCredentials": false
+              },
+              "method": "post",
+              "private": true,
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "package": {
+          "include": [
+            "signup.py"
+          ],
+          "artifact": "/Users/ali/Desktop/Assignmentproject/code/backend/user/.serverless/signup.zip"
+        },
+        "name": "user-dev-signup",
+        "memory": 128,
+        "runtime": "python3.7",
+        "vpc": {},
+        "versionLogicalId": "SignupLambdaVersionY9daiEdyRpTwM1A1hwoDVZuqn6YDSK7s9A203LHqsw"
+      },
+      "update_user": {
+        "handler": "update_user.lambda_handler",
+        "layers": {
+          "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"UpdateUnderscoreuserLambdaFunction\"][\"Properties\"][\"Layers\"]"
+        },
+        "environment": {
+          "stage": "dev"
+        },
+        "memorySize": 128,
+        "timeout": 30,
+        "logRetentionInDays": 5,
+        "role": "arn:aws:iam::970396822222:role/lambda_basic_execution",
+        "events": [
+          {
+            "http": {
+              "path": "update",
+              "cors": {
+                "origins": [
+                  "*"
+                ],
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "PUT"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent"
+                ],
+                "allowCredentials": false
+              },
+              "method": "put",
+              "private": true,
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "package": {
+          "include": [
+            "update_user.py"
+          ],
+          "artifact": "/Users/ali/Desktop/Assignmentproject/code/backend/user/.serverless/update_user.zip"
+        },
+        "name": "user-dev-update_user",
+        "memory": 128,
+        "runtime": "python3.7",
+        "vpc": {},
+        "versionLogicalId": "UpdateUnderscoreuserLambdaVersion2Xu5h3GnZNHaWunDqr2D7UFXWfUqIIIRJJLW9k5X4"
+      }
+    },
+    "serviceFilename": "serverless.yml",
+    "layers": {},
+    "isDashboardMonitoringPreconfigured": false
+  },
+  "package": {
+    "individually": true,
+    "artifactDirectoryName": "serverless/user/dev/1590256731827-2020-05-23T17:58:51.827Z",
+    "artifact": ""
+  }
+}

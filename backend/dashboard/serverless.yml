@@ -1,0 +1,125 @@
+custom: ${file(.././variables-${opt:stage, self:provider.stage}.yml), file(.././variables.yml)}
+
+service: weather
+provider:
+  name: aws
+  memorySize: 128
+  timeout: 30
+  runtime: python3.7
+  stage: dev
+  region: ${self:custom.region}
+  logRetentionInDays: ${self:custom.logRetentionInDays}
+package:
+  individually: true
+  include:
+    - ../common/**
+  exclude:
+    - .__init__.py
+
+functions:
+
+  add_schedule:
+    handler: add_schedule.lambda_handler
+    layers:
+      - arn:aws:lambda:ap-southeast-2:970396822222:layer:dev-devDependencies:2
+    environment:
+      stage: ${self:custom.stage}
+    memorySize: ${self:provider.memorySize}
+    timeout: ${self:provider.timeout}
+    logRetentionInDays: ${self:provider.logRetentionInDays}
+    role: arn:aws:iam::${self:custom.account}:role/${self:custom.roles.basicExecution}
+    events:
+      - http:
+          path: /add_schedule
+          cors: true
+          method: post
+          private: true
+          integration: lambda-proxy
+    package:
+      include:
+        - add_schedule.py
+
+  delete_schedule:
+    handler: delete_schedule.lambda_handler
+    layers:
+      - arn:aws:lambda:ap-southeast-2:970396822222:layer:dev-devDependencies:2
+    environment:
+      stage: ${self:custom.stage}
+    memorySize: ${self:provider.memorySize}
+    timeout: ${self:provider.timeout}
+    logRetentionInDays: ${self:provider.logRetentionInDays}
+    role: arn:aws:iam::${self:custom.account}:role/${self:custom.roles.basicExecution}
+    events:
+      - http:
+          path: /delete_schedule
+          cors: true
+          method: delete
+          private: true
+          integration: lambda-proxy
+    package:
+      include:
+        - delete_schedule.py
+
+  dashboard:
+    handler: main.lambda_handler
+    layers:
+      - arn:aws:lambda:ap-southeast-2:970396822222:layer:dev-devDependencies:2
+    environment:
+      stage: ${self:custom.stage}
+    memorySize: ${self:provider.memorySize}
+    timeout: ${self:provider.timeout}
+    logRetentionInDays: ${self:provider.logRetentionInDays}
+    role: arn:aws:iam::${self:custom.account}:role/${self:custom.roles.basicExecution}
+    events:
+      - http:
+          path: /dashboard
+          cors: true
+          method: post
+          private: true
+          integration: lambda-proxy
+    package:
+      include:
+        - main.py
+
+  profile_picture:
+    handler: profile_picture.lambda_handler
+    layers:
+      - arn:aws:lambda:ap-southeast-2:970396822222:layer:dev-devDependencies:2
+    environment:
+      stage: ${self:custom.stage}
+    memorySize: ${self:provider.memorySize}
+    timeout: ${self:provider.timeout}
+    logRetentionInDays: ${self:provider.logRetentionInDays}
+    role: arn:aws:iam::${self:custom.account}:role/${self:custom.roles.basicExecution}
+    events:
+      - http:
+          path: /profile_picture
+          cors: true
+          method: post
+          private: true
+          integration: lambda-proxy
+    package:
+      include:
+        - main.py
+
+  update_schedule:
+    handler: update_schedule.lambda_handler
+    layers:
+      - arn:aws:lambda:ap-southeast-2:970396822222:layer:dev-devDependencies:2
+    environment:
+      stage: ${self:custom.stage}
+    memorySize: ${self:provider.memorySize}
+    timeout: ${self:provider.timeout}
+    logRetentionInDays: ${self:provider.logRetentionInDays}
+    role: arn:aws:iam::${self:custom.account}:role/${self:custom.roles.basicExecution}
+    events:
+      - http:
+          path: /update_schedule
+          cors: true
+          method: put
+          private: true
+          integration: lambda-proxy
+    package:
+      include:
+        - update_schedule.py
+

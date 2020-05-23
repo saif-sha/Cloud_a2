@@ -1,0 +1,27 @@
+custom: ${file(.././variables-${opt:stage, self:provider.stage}.yml), file(.././variables.yml)}
+
+service: assignments-layers
+provider:
+  name: aws
+  memorySize: 128
+  timeout: 30
+  runtime: python3.7
+  stage: dev
+  region: ${self:custom.region}
+layers:
+  devDependencies:
+    path: ../layers/dev_dependencies
+    name: dev-devDependencies
+    description: "optional description for Our dependencies layer"
+    allowedAccounts:
+      - '*'
+    compatibleRuntimes: # optional, a list of runtimes this layer is compatible with
+      - python3.7
+
+resources:
+  Outputs:
+    DevDependenciesLayerExport:
+        Value:
+          Ref: DevDependenciesLambdaLayer
+        Export:
+          Name: DevDependenciesLambdaLayer-dev

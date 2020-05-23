@@ -1,0 +1,107 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "The AWS CloudFormation template for this Serverless application",
+  "Resources": {
+    "ServerlessDeploymentBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "AES256"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "ServerlessDeploymentBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "ServerlessDeploymentBucket"
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Effect": "Deny",
+              "Principal": "*",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "ServerlessDeploymentBucket"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ],
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": false
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "DevDependenciesLambdaLayer": {
+      "Type": "AWS::Lambda::LayerVersion",
+      "Properties": {
+        "Content": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/assignments-layers/dev/1590256201661-2020-05-23T17:50:01.661Z/devDependencies.zip"
+        },
+        "LayerName": "dev-devDependencies",
+        "Description": "optional description for Our dependencies layer",
+        "CompatibleRuntimes": [
+          "python3.7"
+        ]
+      }
+    },
+    "DevDependenciesWildLambdaLayerPermission": {
+      "Type": "AWS::Lambda::LayerVersionPermission",
+      "Properties": {
+        "Action": "lambda:GetLayerVersion",
+        "LayerVersionArn": {
+          "Ref": "DevDependenciesLambdaLayer"
+        },
+        "Principal": "*"
+      }
+    }
+  },
+  "Outputs": {
+    "ServerlessDeploymentBucketName": {
+      "Value": {
+        "Ref": "ServerlessDeploymentBucket"
+      }
+    },
+    "DevDependenciesLambdaLayerQualifiedArn": {
+      "Description": "Current Lambda layer version",
+      "Value": {
+        "Ref": "DevDependenciesLambdaLayer"
+      }
+    },
+    "DevDependenciesLayerExport": {
+      "Value": {
+        "Ref": "DevDependenciesLambdaLayer"
+      },
+      "Export": {
+        "Name": "DevDependenciesLambdaLayer-dev"
+      }
+    }
+  }
+}

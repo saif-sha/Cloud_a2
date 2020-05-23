@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="d7f2dd37-eb99-4931-9045-275d9136f70d" name="ubutnu">
+        <fileTransfer rootFolder="/home/ubuntu/frontend" accessType="SFTP" host="3.25.54.8" port="22" sshConfigId="e5d9d982-9edc-4fce-b52d-f5065980c0b8" sshConfig="ubuntu@3.25.54.8:22 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

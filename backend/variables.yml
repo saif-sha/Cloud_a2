@@ -1,0 +1,29 @@
+#DEV Custom Domain Mapping and cert info
+CustomDomainMaping:
+  domainName: backend.rmitassignment.tk
+  endpointType: Regional
+  certificateArn: arn:aws:acm:ap-southeast-2:970396822222:certificate/d3f63a80-691e-47fc-bf04-fe9ca04e70e9
+  certificateName: '*.rmitassignment.tk'
+  createRoute53Record: true
+  hostedZoneId: Z2RPCDW04V8134
+
+enabledlambdaevents: true
+enabledCloudWatchevents: 'ENABLED'
+
+APIKeys:
+  ServerlessCoreAPIKey: RestAPIKey
+  SupportAPIKey: assign_api_key
+
+UsagePlans:
+  ASSIGNAPIUsage: ASSIGNAPIUsage
+
+
+stage: "dev"
+isremoteoldstructure: "0"
+logRetentionInDays: 5
+account: 970396822222
+customAuthorizer: rest_auth
+region: ap-southeast-2
+
+roles:
+  basicExecution: lambda_basic_execution

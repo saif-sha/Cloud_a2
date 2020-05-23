@@ -1,0 +1,258 @@
+{
+  "service": {
+    "service": "assignments-layers",
+    "serviceObject": {
+      "name": "assignments-layers"
+    },
+    "provider": {
+      "stage": "dev",
+      "variableSyntax": "\\${([^{}]+?)}",
+      "name": "aws",
+      "memorySize": 128,
+      "timeout": 30,
+      "runtime": "python3.7",
+      "region": "ap-southeast-2",
+      "versionFunctions": true,
+      "remoteFunctionData": null,
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketEncryption": {
+                "ServerSideEncryptionConfiguration": [
+                  {
+                    "ServerSideEncryptionByDefault": {
+                      "SSEAlgorithm": "AES256"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "ServerlessDeploymentBucketPolicy": {
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+              "Bucket": {
+                "Ref": "ServerlessDeploymentBucket"
+              },
+              "PolicyDocument": {
+                "Statement": [
+                  {
+                    "Action": "s3:*",
+                    "Effect": "Deny",
+                    "Principal": "*",
+                    "Resource": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            },
+                            "/*"
+                          ]
+                        ]
+                      }
+                    ],
+                    "Condition": {
+                      "Bool": {
+                        "aws:SecureTransport": false
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "DevDependenciesLambdaLayer": {
+            "Type": "AWS::Lambda::LayerVersion",
+            "Properties": {
+              "Content": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/assignments-layers/dev/1590256201661-2020-05-23T17:50:01.661Z/devDependencies.zip"
+              },
+              "LayerName": "dev-devDependencies",
+              "Description": "optional description for Our dependencies layer",
+              "CompatibleRuntimes": [
+                "python3.7"
+              ]
+            }
+          },
+          "DevDependenciesWildLambdaLayerPermission": {
+            "Type": "AWS::Lambda::LayerVersionPermission",
+            "Properties": {
+              "Action": "lambda:GetLayerVersion",
+              "LayerVersionArn": {
+                "Ref": "DevDependenciesLambdaLayer"
+              },
+              "Principal": "*"
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          },
+          "DevDependenciesLambdaLayerQualifiedArn": {
+            "Description": "Current Lambda layer version",
+            "Value": {
+              "Ref": "DevDependenciesLambdaLayer"
+            }
+          },
+          "DevDependenciesLayerExport": {
+            "Value": {
+              "Ref": "DevDependenciesLambdaLayer"
+            },
+            "Export": {
+              "Name": "DevDependenciesLambdaLayer-dev"
+            }
+          }
+        }
+      },
+      "coreCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketEncryption": {
+                "ServerSideEncryptionConfiguration": [
+                  {
+                    "ServerSideEncryptionByDefault": {
+                      "SSEAlgorithm": "AES256"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "ServerlessDeploymentBucketPolicy": {
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+              "Bucket": {
+                "Ref": "ServerlessDeploymentBucket"
+              },
+              "PolicyDocument": {
+                "Statement": [
+                  {
+                    "Action": "s3:*",
+                    "Effect": "Deny",
+                    "Principal": "*",
+                    "Resource": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            },
+                            "/*"
+                          ]
+                        ]
+                      }
+                    ],
+                    "Condition": {
+                      "Bool": {
+                        "aws:SecureTransport": false
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          }
+        }
+      }
+    },
+    "custom": {
+      "CustomDomainMaping": {
+        "domainName": "backend.rmitassignment.tk",
+        "endpointType": "Regional",
+        "certificateArn": "arn:aws:acm:ap-southeast-2:970396822222:certificate/d3f63a80-691e-47fc-bf04-fe9ca04e70e9",
+        "certificateName": "*.rmitassignment.tk",
+        "createRoute53Record": true,
+        "hostedZoneId": "Z2RPCDW04V8134"
+      },
+      "enabledlambdaevents": true,
+      "enabledCloudWatchevents": "ENABLED",
+      "APIKeys": {
+        "ServerlessCoreAPIKey": "RestAPIKey",
+        "SupportAPIKey": "assign_api_key"
+      },
+      "UsagePlans": {
+        "ASSIGNAPIUsage": "ASSIGNAPIUsage"
+      },
+      "stage": "dev",
+      "isremoteoldstructure": "0",
+      "logRetentionInDays": 5,
+      "account": 970396822222,
+      "customAuthorizer": "rest_auth",
+      "region": "ap-southeast-2",
+      "roles": {
+        "basicExecution": "lambda_basic_execution"
+      }
+    },
+    "pluginsData": {},
+    "functions": {},
+    "resources": {
+      "Outputs": {
+        "DevDependenciesLayerExport": {
+          "Value": {
+            "Ref": "DevDependenciesLambdaLayer"
+          },
+          "Export": {
+            "Name": "DevDependenciesLambdaLayer-dev"
+          }
+        }
+      },
+      "Resources": {}
+    },
+    "serviceFilename": "serverless.yml",
+    "layers": {
+      "devDependencies": {
+        "path": "../layers/dev_dependencies",
+        "name": "dev-devDependencies",
+        "description": "optional description for Our dependencies layer",
+        "allowedAccounts": [
+          "*"
+        ],
+        "compatibleRuntimes": [
+          "python3.7"
+        ],
+        "package": {
+          "artifact": "/Users/ali/Desktop/Assignmentproject/code/backend/layers/.serverless/devDependencies.zip"
+        }
+      }
+    },
+    "isDashboardMonitoringPreconfigured": false
+  },
+  "package": {
+    "artifactDirectoryName": "serverless/assignments-layers/dev/1590256201661-2020-05-23T17:50:01.661Z",
+    "artifact": ""
+  }
+}

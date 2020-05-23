@@ -1,0 +1,82 @@
+custom: ${file(.././variables-${opt:stage, self:provider.stage}.yml), file(.././variables.yml)}
+
+service: user
+provider:
+  name: aws
+  memorySize: 128
+  timeout: 30
+  runtime: python3.7
+  stage: dev
+  region: ${self:custom.region}
+  logRetentionInDays: ${self:custom.logRetentionInDays}
+package:
+  individually: true
+  include:
+    - ../common/**
+  exclude:
+    - .__init__.py
+
+functions:
+
+  login:
+    handler: login.lambda_handler
+    layers:
+      - arn:aws:lambda:ap-southeast-2:970396822222:layer:dev-devDependencies:2
+    environment:
+      stage: ${self:custom.stage}
+    memorySize: ${self:provider.memorySize}
+    timeout: ${self:provider.timeout}
+    logRetentionInDays: ${self:provider.logRetentionInDays}
+    role: arn:aws:iam::${self:custom.account}:role/${self:custom.roles.basicExecution}
+    events:
+      - http:
+          path: /signin
+          cors: true
+          method: post
+          private: true
+          integration: lambda-proxy
+    package:
+      include:
+        - login.py
+
+  signup:
+    handler: signup.lambda_handler
+    layers:
+      - arn:aws:lambda:ap-southeast-2:970396822222:layer:dev-devDependencies:2
+    environment:
+      stage: ${self:custom.stage}
+    memorySize: ${self:provider.memorySize}
+    timeout: ${self:provider.timeout}
+    logRetentionInDays: ${self:provider.logRetentionInDays}
+    role: arn:aws:iam::${self:custom.account}:role/${self:custom.roles.basicExecution}
+    events:
+      - http:
+          path: /signup
+          cors: true
+          method: post
+          private: true
+          integration: lambda-proxy
+    package:
+      include:
+        - signup.py
+
+  update_user:
+    handler: update_user.lambda_handler
+    layers:
+      - arn:aws:lambda:ap-southeast-2:970396822222:layer:dev-devDependencies:2
+    environment:
+      stage: ${self:custom.stage}
+    memorySize: ${self:provider.memorySize}
+    timeout: ${self:provider.timeout}
+    logRetentionInDays: ${self:provider.logRetentionInDays}
+    role: arn:aws:iam::${self:custom.account}:role/${self:custom.roles.basicExecution}
+    events:
+      - http:
+          path: /update
+          cors: true
+          method: put
+          private: true
+          integration: lambda-proxy
+    package:
+      include:
+        - update_user.py

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig host="3.25.54.8" id="e5d9d982-9edc-4fce-b52d-f5065980c0b8" keyPath="$PROJECT_DIR$/../../Resources/Services/EC2/ec2machine.pem" port="22" nameFormat="DESCRIPTIVE" username="ubuntu" />
+    </configs>
+  </component>
+</project>
